@@ -5,109 +5,125 @@
 
 
 # Online-Offline-Budget-Tracker
-> This is a repository for an application that allows a user to enter information about their workouts and track previous workouts through the use of a database. The user can add in details specific to resistance or cardiovascular workouts, including duration, distance, reps, weights, etc. Information about these workouts is then added into a database that tracks all previous workouts. A user can then review information regarding the workouts they've completed over the course of the past 7 days through the use of a stat compiler.
+> This is a repository for an application that allows a user to track their budget regardless of whether they are connected to the internet or not. A user can add in transactions while connected to the internet, and if their connection is interrupted, they can still enter in transactions. Once the internet connection is restored, the transactions will automatically be entered into the database.
  
 ## Table of contents
 * [General Info](#general-info)
+* [User Story](#user-story)
 * [Technologies](#technologies)
 * [Live Link](#Live-Link)
+* [Screen Shot](#Screen-Shot)
 * [Code Snippets](#code-snippets)
 * [Sources](#sources)
 * [Contact](#contact)
 
 ## General Info
-The database was initialized using MongoDB through execution of a seed file in the terminal. The application server was initialized using an Express router and the API routes include queries to the MongoDB database to display previous stats for the prior 7 days. The application is deployed to Heroku and the database has been connected to MongoDB Atlas.
+The database was initialized using MongoDB the model was set up utilizing Mongoose. The application server was initialized using an Express router and the API routes include queries to the MongoDB database to display previous transactions that have been added into the budget tracker. If the internet connection is lost, the user can still enter in transactions through the use of an indexed DB - once the connection comes back online, those transactions that were entered while offline are added to the live database. The application is deployed to Heroku and the database has been connected to MongoDB Atlas.
+
+## User Story
+AS AN avid traveller
+I WANT to be able to track my withdrawals and deposits with or without a data/internet connection
+SO THAT my account balance is accurate when I am traveling
 
 ## Technologies
 * Javascript
 * HTML/CSS
-* JQuery
 * Node
 * NPM Express
 * NPM MongoDB
 * NPM Mongoose
 * NPM Morgan
+* NPM Compression
 * Heroku
 * MongoDB
 * MongoDB Atlas
 * MongoDB Compass
 
 ## Live Link
-[Workout_Tracker_App](https://powerful-dawn-49801.herokuapp.com/)
+[Online-Offline Budget Tracker](UPDATE)
+
+## Screen Shot
+![Online-Offline Budget Tracker Screen Shot](UPDATE)
 
 ## Code Snippets
 
-The below example code shows an Express route that sets up the review of exercise stats for the prior 7 days:
+The below example code shows the service worker being installed in the browser:
 ```js
-router.get('/api/workouts/range', async (req, res) => {
-    try {
-        const workoutRange = await Workout.aggregate([{
-            $addFields: {
-                totalDuration: { $sum: '$exercises.duration' },
-            }
-        }]).limit(7);
-        res.json(workoutRange);
-    } catch (err) {
-        res.status(400);
-        res.send(`Failed with: ${err}`);
-    }
-})
+// install service-worker
+self.addEventListener("install", function (evt) {
+  // pre cache transaction data
+  evt.waitUntil(
+    caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/transaction"))
+  );
+
+  // pre cache all static assets
+  evt.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+  );
+
+  // tell the browser to activate this service worker immediately once it has finished installing
+  self.skipWaiting();
+});
 ```
 
-The below example code shows the Workout model setup in the MongoDB database:
+The below example code shows the setup of the web manifest:
 ```js
-const WorkoutSchema = new Schema ({
-
-    day: {
-        type: Date,
-        trim: true,
-        required: true,
-        default: Date.now
-    },
-
-    exercises: [{
-        type: {
-            type: String,
-            trim: true,
-            required: true,
-            validate: [({ length }) => length <= 50, 'Type is too long, please shorten!']
+{
+    "name": "Budget Tracker App",
+    "short_name": "Tracker App",
+    "icons": [
+        {
+            "src": "icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
         },
-    
-        name: {
-            type: String,
-            trim: true,
-            required: true,
-            validate: [({ length }) => length <= 50, 'Name is too long, please shorten!']
-        },
-    
-        duration: {
-            type: Number,
-            trim: true,
-            required: true,
-            default: 0
-        },
-
-        distance: {
-            type: Number,
-            trim: true,
-        },
-    
-        weight: {
-            type: Number,
-            trim: true,          
-        },
-    
-        reps: {
-            type: Number,
-            trim: true,
-        },
-    
-        sets: {
-            type: Number,
-            trim: true,
+        {
+            "src": "icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
         }
-    }],
-})
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "start_url": "/",
+    "display": "standalone"    
+}
+```
+
+The below example code shows the function responsible for checking the indexed DB once the internet connection is restored to ensure any offline entries are correctly added into the database.
+```js
+function checkDatabase() {
+  // open a transaction on your pending db
+  const transaction = db.transaction(["pending"], "readwrite");
+  // access your pending object store
+  const store = transaction.objectStore("pending");
+  // get all records from store and set to a variable
+  const getAll = store.getAll();
+
+  getAll.onsuccess = function () {
+    if (getAll.result.length > 0) {
+      fetch("/api/transaction/bulk", {
+        method: "POST",
+        body: JSON.stringify(getAll.result),
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then(() => {
+          // if successful, open a transaction on your pending db
+          const transaction = db.transaction(["pending"], "readwrite");
+
+          // access your pending object store
+          const store = transaction.objectStore("pending");
+
+          // clear all items in your store
+          store.clear();
+        });
+    }
+  };
+}
 ```
 
 ## Sources
@@ -117,6 +133,7 @@ Application enabled using the following sources:
 * [NPM MongoDB](https://www.npmjs.com/package/mongodb)
 * [NPM Mongoose](https://www.npmjs.com/package/mongoose)
 * [NPM Morgan](https://www.npmjs.com/package/morgan)
+* [NPM Compression](https://www.npmjs.com/package/compression)
 
 ## Contact
 Created by Sam Rogers - feel free to contact me to collaborate on this project or any other project!

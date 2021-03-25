@@ -1,5 +1,6 @@
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/google/skia.svg?style=flat)]()
-[![GitHub Followers](https://img.shields.io/github/followers/tterb.svg?style=social&label=Follow)](https://github.com/samrogers15/Online-Offline-Budget-Tracker)
+![GitHub Last Commit](https://img.shields.io/github/last-commit/samrogers15/Online-Offline-Budget-Tracker?style=plastic)
+![GitHub Repo Size](https://img.shields.io/github/repo-size/samrogers15/Online-Offline-Budget-Tracker?style=plastic)
+![GitHub Followers](https://img.shields.io/github/followers/samrogers15?style=social)
 ![GitHub](https://img.shields.io/github/languages/top/samrogers15/Online-Offline-Budget-Tracker?style=plastic)
 
 

@@ -1,4 +1,7 @@
-[![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg?style=flat)]()
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/google/skia.svg?style=flat)]()
+[![GitHub Followers](https://img.shields.io/github/followers/tterb.svg?style=social&label=Follow)](https://github.com/samrogers15/Online-Offline-Budget-Tracker)
+![GitHub](https://img.shields.io/github/languages/top/samrogers15/Online-Offline-Budget-Tracker?style=plastic)
+
 
 # Online-Offline-Budget-Tracker
 > This is a repository for an application that allows a user to enter information about their workouts and track previous workouts through the use of a database. The user can add in details specific to resistance or cardiovascular workouts, including duration, distance, reps, weights, etc. Information about these workouts is then added into a database that tracks all previous workouts. A user can then review information regarding the workouts they've completed over the course of the past 7 days through the use of a stat compiler.

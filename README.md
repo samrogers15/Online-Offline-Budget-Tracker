@@ -40,10 +40,10 @@ SO THAT my account balance is accurate when I am traveling
 * MongoDB Compass
 
 ## Live Link
-[Online-Offline Budget Tracker](UPDATE)
+[Online-Offline Budget Tracker](https://obscure-lake-61347.herokuapp.com/)
 
 ## Screen Shot
-![Online-Offline Budget Tracker Screen Shot](UPDATE)
+![Online-Offline Budget Tracker Screen Shot](./public/images/budget_tracker_screenshot.png)
 
 ## Code Snippets
 
